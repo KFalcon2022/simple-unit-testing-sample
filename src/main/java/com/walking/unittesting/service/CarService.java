@@ -2,31 +2,30 @@ package com.walking.unittesting.service;
 
 
 import com.walking.unittesting.model.Car;
-import com.walking.unittesting.model.CarIdentifier;
+import com.walking.unittesting.repository.CarRepository;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class CarService {
-    private final Map<CarIdentifier, Car> cars = new ConcurrentHashMap<>();
+    private final CarRepository carRepository;
+
+    public CarService(CarRepository carRepository) {
+        this.carRepository = carRepository;
+    }
 
     public synchronized List<Car> findAll() {
-        return new ArrayList<>(cars.values());
+        return carRepository.findAll();
     }
 
     public synchronized Car add(Car car) {
-        if (cars.containsKey(car.getIdentifier())) {
+        if (carRepository.isExists(car)) {
             throw new RuntimeException("Car exists");
         }
 
-        cars.put(car.getIdentifier(), car);
-
-        return car;
+        return carRepository.create(car);
     }
 
     public synchronized void delete(Car car) {
-        cars.remove(car.getIdentifier());
+        carRepository.delete(car);
     }
 }
