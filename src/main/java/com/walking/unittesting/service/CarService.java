@@ -14,7 +14,7 @@ public class CarService {
     }
 
     public synchronized List<Car> findAll() {
-        return carRepository.findAll();
+        return new CarRepository().findAll();
     }
 
     public synchronized Car add(Car car) {
